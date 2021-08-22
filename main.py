@@ -15,9 +15,22 @@ parser.add_argument(
 args = parser.parse_args()
 
 
+def confirm_recon(recon) -> bool:
+    inp = input(
+        "Recon report\n=====\nTotal file(s) found: %i\nTotal size: %f GiB\nContinue? (Y/n): "
+        % (len(recon[0]), recon[1])
+    )
+    if inp == "n":
+        return False
+    return True
+
+
 def main():
     sorter = FileSorter(input_dir=args.i, output_dir=args.o)
-    sorter.sort()
+    recon = sorter.dorecon()
+    if not confirm_recon(recon):
+        exit(0)
+    sorter.dosort(recon)
 
 
 if __name__ == "__main__":
